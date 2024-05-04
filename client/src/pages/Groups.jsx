@@ -1,5 +1,5 @@
 import React from 'react'
-import AppLayout from '../layout/AppLayout'
+import AppLayout from '../components/layout/AppLayout'
 
 const Groups = () => {
   return (

@@ -1,7 +1,7 @@
 import React,{lazy} from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
-import ProtectRoute from './auth/ProtectRoute.jsx'
+import ProtectRoute from './components/auth/ProtectRoute.jsx'
 
 // lazy import
 const Home = lazy(()=> import("./pages/Home.jsx"))
