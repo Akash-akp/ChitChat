@@ -3,6 +3,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import {Toaster} from 'react-hot-toast'
 import ProtectRoute from './auth/ProtectRoute.jsx'
 
+// lazy import
 const Home = lazy(()=> import("./pages/Home.jsx"))
 const Chat = lazy(()=> import("./pages/Chat.jsx"))
 const Groups = lazy(()=> import("./pages/Groups.jsx"))
@@ -10,8 +11,9 @@ const Login = lazy(()=> import("./pages/Login.jsx"))
 const NotFound = lazy(()=> import("./pages/NotFound.jsx"))
 
 const App = () => {
-  const user = false;
+  const user = true;
   return (
+    // Routing 
     <BrowserRouter>
       <Routes>
 
@@ -27,6 +29,7 @@ const App = () => {
 
         <Route path='*' element={<NotFound />} />
       </Routes>
+      {/* Import Toast */}
       <Toaster />
     </BrowserRouter>
   )

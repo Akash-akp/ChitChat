@@ -1,11 +1,12 @@
 import React from 'react'
+import AppLayout from '../layout/AppLayout'
 
 const Home = () => {
   return (
-    <div>
+    <AppLayout>
       Hii My name is Akash
-    </div>
+    </AppLayout>
   )
 }
 
-export default Home
+export default Home;
