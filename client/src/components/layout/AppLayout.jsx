@@ -11,8 +11,10 @@ import binSolidIcon from "../../assets/Icons/binSolid.svg"
 import accountIcon from "../../assets/Icons/account.svg"
 import accountSolidIcon from "../../assets/Icons/accountSolid.svg"
 import Title from "../shared/Title.jsx";
+import { useNavigate } from "react-router-dom";
 
 const AppLayout = ({children}) => {
+    const navigate = useNavigate();
     return (
         <>
             <Title />
@@ -30,7 +32,9 @@ const AppLayout = ({children}) => {
                         {/* <img src={binSolidIcon} className="scale-150" /> */}
                     </div>
                     <div className="flex flex-col gap-5 my-[30px]">
-                        <img src={accountIcon} className="scale-150" />
+                        <div onClick={()=>navigate('/profile/1')}>
+                            <img src={accountIcon} className="scale-150" />
+                        </div>
                         {/* <img src={accountSolidIcon} className="scale-150" /> */}
                     </div>
                 </div>
