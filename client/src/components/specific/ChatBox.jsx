@@ -73,7 +73,17 @@ const ChatBox = (
         {
             senderId: 0,
             recieverId: 2,
-            msg:"Hii Pretty Aakriti!! What's up"
+            msg:"Hii Aakriti!! What's up"
+        },
+        {
+            senderId:4,
+            recieverId:0,
+            msg:"Hii Akash"
+        },
+        {
+            senderId:0,
+            recieverId:4,
+            msg:"Hii Lazy Person"
         },
         {
             senderId:3,
@@ -83,7 +93,7 @@ const ChatBox = (
         {
             senderId:0,
             recieverId:3,
-            msg:"Hii Lazy Person"
+            msg:"Hii Bro"
         },
         {   
             senderId: 0,

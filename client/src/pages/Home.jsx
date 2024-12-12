@@ -22,12 +22,13 @@ const Home = () => {
             name:"Aakriti Nayak",
             Id : 2,
             mode: "Online"
-        },{
-            name:"K Simran",
-            Id : 3
-        }
-        ,{
+        },
+        {
             name:"Abhisek Nandi",
+            Id : 3
+        },
+        {
+            name:"K Simran",
             Id : 4
         }
     ];
