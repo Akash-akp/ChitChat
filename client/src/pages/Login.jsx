@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {  useNavigate } from 'react-router-dom'
 import { AiOutlineEye , AiOutlineEyeInvisible } from "react-icons/ai";
 import { toast }  from 'react-hot-toast'
@@ -7,6 +7,7 @@ import axios from 'axios';
 
 const Login = () => {
     const [isLogin,setIsLogin] = useState(true);
+    const navigate = useNavigate();
     const toggleIsLogin = ()=>{setIsLogin(!isLogin)}
     const [eyeVisible,setEyeVisible] = useState(true);
     const [eyeVisibleConfirm,setEyeVisibleConfirm] = useState(true);
@@ -52,21 +53,29 @@ const Login = () => {
         }
         // setLoggedIn(true);
     }
-    const loginSubmitHandler = async(event) =>{
+    const loginSubmitHandler = async (event) => {
         event.preventDefault();
-        try{
-            const response = await axios.post('http://localhost:8000/auth/signin',{
+        try {
+            console.log("Submitting login form with data:", loginFormData);
+            const response = await axios.post('http://localhost:8000/auth/signin', {
                 email: loginFormData.userId,
-                password: loginFormData.userPassword
-            })
-            console.log(response.data);
-            toast.success("Account Login");
-            setLoginFormData({userId:"",userPassword:""});
-        }catch(error){
-            console.log("unable to sign in",error);
-            toast.error("Invalid Credential");
+                password: loginFormData.userPassword,
+            });
+    
+            if (response.data.token) {
+                console.log("Login successful, token:", response.data.token);
+                localStorage.setItem("token", response.data.token);
+                toast.success("Login successful!");
+                navigate('/'); // Redirect to '/chat/'
+            } else {
+                throw new Error("Token missing in response");
+            }
+        } catch (error) {
+            console.error("Unable to sign in:", error);
+            toast.error("Invalid credentials. Please try again.");
         }
-    }
+    };
+
   return (
     <div className='flex justify-center bg-orange-800 min-h-[100vh] h-[800px]'>
         <div className='w-[600px] h-[700px] border rounded-xl shadow-xl my-10 relative bg-white'>
@@ -84,7 +93,7 @@ const Login = () => {
                                 Don't have an account? <span onClick={toggleIsLogin} className='text-primary hover:underline cursor-pointer'>Create account</span>
                             </div>
                         </div>
-                        <form onSubmit={loginSubmitHandler} className='flex flex-col items-center gap-4'>
+                        <form className='flex flex-col items-center gap-4'>
                             <input type='email' placeholder='Email Address' name='userId' value={loginFormData.userId} onChange={loginChangeHandler}  className='border border-gray-300 rounded-lg w-[300px] px-3 py-2 text-sm' required></input>
                             <div className='relative'>
                                 <input type={eyeVisible?("password"):("text")} placeholder='Password' name='userPassword' value={loginFormData.userPassword} onChange={loginChangeHandler}  className='border border-gray-300 rounded-lg w-[300px] px-3 py-2 text-sm' required></input>
@@ -92,7 +101,7 @@ const Login = () => {
                                     {eyeVisible?(<AiOutlineEye />):(<AiOutlineEyeInvisible/>)}
                                 </div>
                             </div>
-                            <button className='bg-orange-300 w-[300px] py-2 rounded-lg hover:bg-primary hover:text-white'>Log In</button>
+                            <button className='bg-orange-300 w-[300px] py-2 rounded-lg hover:bg-primary hover:text-white' onClick={loginSubmitHandler}>Log In</button>
                             <p className='text-[10px] text-gray-500 relative bottom-1'>By login you agree to our <span className='text-primary hover:underline'>Term of Use</span> and <span className='text-primary hover:underline'>PrivacyPolicy</span>.</p>
                         </form>
                         <div className='flex flex-col items-center my-3'>

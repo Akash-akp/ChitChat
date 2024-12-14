@@ -1,6 +1,6 @@
 const User = require('../models/user.model.js');
 const bcryptjs = require('bcryptjs');
-const { errorHandler } = require('../utils/error.js');
+const errorHandler = require('../utils/error.js');
 const jwt = require('jsonwebtoken');
 
 const signup = async (req, res, next) => {
@@ -44,6 +44,7 @@ const signin = async (req, res, next) => {
         );
         validUser.message = "Logged in";
         const { password: pass, ...rest } = validUser._doc;
+        rest.token = token;
         res.status(200)
             // .cookie('access token', token, {
             //     httpOnly: true,
