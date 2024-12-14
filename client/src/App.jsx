@@ -4,10 +4,10 @@ import {Toaster} from 'react-hot-toast'
 import ProtectRoute from './components/auth/ProtectRoute.jsx'
 import Home from "./pages/Home.jsx"
 import Profile from "./components/specific/Profile.jsx";
+import Notification from './pages/Notifications.jsx';
 
 // lazy import
-const Chat = lazy(()=> import("./pages/Chat.jsx"))
-const Groups = lazy(()=> import("./pages/Groups.jsx"))
+const Chat = lazy(()=> import("./pages/Chats.jsx"))
 const Login = lazy(()=> import("./pages/Login.jsx"))
 const NotFound = lazy(()=> import("./pages/NotFound.jsx"))
 
@@ -22,8 +22,10 @@ const App = () => {
 
         <Route element={<ProtectRoute user={user}/>} > 
           <Route path='/' element={<Home />} />
+          <Route path='/chat' element={<Home />} />
           <Route path='/chat/:chatParamId' element={<Home />} />
-          <Route path='/groups' element={<Groups />} />
+          <Route path='/notification' element={<Notification />} />
+          <Route path='/notification/:notificationParamId' element={<Notification />} />
           <Route path='/profile/:profileId' element={<Profile />} />
         </ Route>
 

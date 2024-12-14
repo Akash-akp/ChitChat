@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
+import AppLayout from '../layout/AppLayout';
 
 const Profile = () => {
     const {profileId} = useParams();
@@ -49,6 +50,7 @@ const Profile = () => {
     return (
         <>
         {loading?(<h1>Loading....</h1>):(
+            <AppLayout>
             <div className='bg-white h-full w-full rounded-xl relative flex flex-col gap-3 items-center py-[80px]'>
             <div className='bg-black h-[150px] w-[150px] rounded-full'>
 
@@ -81,6 +83,7 @@ const Profile = () => {
                 </div>
             </div>
         </div>
+        </AppLayout>
         
     )}
     </>

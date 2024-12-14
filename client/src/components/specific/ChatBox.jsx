@@ -164,16 +164,16 @@ const ChatBox = (
         <div className='h-[calc(100vh-160px)] bg-white rounded-xl overflow-y-scroll'>
             {perChat?(
                 <div className='relative'>
-                    {perChat.map((data)=>{
+                    {perChat.map((data,index)=>{
                         if(data.senderId==curr.currentChat.Id){
                             return(
-                                <div className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
+                                <div key={index} className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
                                     {data.msg}
                                 </div>
                             )
                         }else{
                             return(
-                                <div className='flex justify-end'>
+                                <div key={index} className='flex justify-end'>
                                     <div className='bg-gray-700 text-white block m-2 p-2 rounded-l-xl rounded-tr-xl  max-w-[50%] w-fit text-right relative right-0'>
                                         {data.msg}
                                     </div>

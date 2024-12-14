@@ -3,6 +3,7 @@ import {  useNavigate } from 'react-router-dom'
 import { AiOutlineEye , AiOutlineEyeInvisible } from "react-icons/ai";
 import { toast }  from 'react-hot-toast'
 import Google from '../assets/google.jpeg';
+import axios from 'axios';
 
 const Login = () => {
     const [isLogin,setIsLogin] = useState(true);
@@ -21,6 +22,7 @@ const Login = () => {
             return {...prev ,[event.target.name]:event.target.value}
         })
     }
+
     const eyeChangeHandler = () =>{
         setEyeVisible(!eyeVisible);
     }
@@ -28,19 +30,42 @@ const Login = () => {
         setEyeVisibleConfirm(!eyeVisibleConfirm);
     }
 
-    const signupSubmitHandler = (event) =>{
+    const signupSubmitHandler = async(event) =>{
         event.preventDefault();
         if(signupFormData.userPassword!==signupFormData.userConfirmPassword){
             toast.error("Password donot match");
             return;
         }
+        try{
+            const response = await axios.post('http://localhost:8000/auth/signup',{
+                userName: signupFormData.userName,
+                email: signupFormData.userId,
+                password: signupFormData.userPassword
+            })
+            console.log(response.data);
+            toast.success("Account Created");
+            setSignupFormData({userName:"",userId:"",userPassword:"",userConfirmPassword:""});
+            toggleIsLogin();
+        }catch(error){
+            console.log("unable to sign up",error);
+            toast.error("Invalid Credential");
+        }
         // setLoggedIn(true);
-        toast.success("Account Created");
-        toggleIsLogin();
     }
-    const loginSubmitHandler = (event) =>{
+    const loginSubmitHandler = async(event) =>{
         event.preventDefault();
-        toast.success("Account Created");
+        try{
+            const response = await axios.post('http://localhost:8000/auth/signin',{
+                email: loginFormData.userId,
+                password: loginFormData.userPassword
+            })
+            console.log(response.data);
+            toast.success("Account Login");
+            setLoginFormData({userId:"",userPassword:""});
+        }catch(error){
+            console.log("unable to sign in",error);
+            toast.error("Invalid Credential");
+        }
     }
   return (
     <div className='flex justify-center bg-orange-800 min-h-[100vh] h-[800px]'>
