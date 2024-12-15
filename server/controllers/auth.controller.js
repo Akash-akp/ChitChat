@@ -3,6 +3,17 @@ const bcryptjs = require('bcryptjs');
 const errorHandler = require('../utils/error.js');
 const jwt = require('jsonwebtoken');
 
+
+const auth = async(req,res,next) =>{
+    const token = req.headers.token;
+    const decodedData = jwt.sign(token,process.env.JWT_SECRET);
+    if(decodedData){
+        next();
+    }else{
+        next(errorHandler(400,"You are not authenticated"));
+    }
+}
+
 const signup = async (req, res, next) => {
     console.log(req.body);
     const { userName, email, password } = req.body;
@@ -85,4 +96,4 @@ const google = async (req, res, next) => {
     }
 };
 
-module.exports = { signup, signin, google };
+module.exports = { signup, signin, google ,auth};
