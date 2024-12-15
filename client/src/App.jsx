@@ -8,7 +8,6 @@ import Notification from './pages/Notifications.jsx';
 import Login from "./pages/Login.jsx";
 
 // lazy import
-const Chat = lazy(()=> import("./pages/Chats.jsx"))
 const NotFound = lazy(()=> import("./pages/NotFound.jsx"))
 
 const App = () => {
@@ -34,17 +33,17 @@ const App = () => {
       <Suspense fallback={<div>Loading...</div>}>
       <Routes>
 
+        <Route element={<ProtectRoute user={user}/>} > 
           <Route path='/' element={<Home />} />
           <Route path='/notification' element={<Notification />} />
           <Route path='/notification/:notificationParamId' element={<Notification />} />
           <Route path='/chat' element={<Home />} />
           <Route path='/chat/:chatParamId' element={<Home />} />
           <Route path='/profile/:profileId' element={<Profile />} />
-        <Route element={<ProtectRoute user={user}/>} > 
         </ Route>
 
-          <Route path='/login' element={<Login />} />
         <Route element={<ProtectRoute user={!user} redirect='/'/>}> 
+          <Route path='/login' element={<Login setUser={setUser} />} />
         </Route>
 
         <Route path='*' element={<NotFound />} />

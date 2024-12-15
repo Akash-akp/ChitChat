@@ -5,7 +5,7 @@ import { toast }  from 'react-hot-toast'
 import Google from '../assets/google.jpeg';
 import axios from 'axios';
 
-const Login = () => {
+const Login = ({setUser}) => {
     const [isLogin,setIsLogin] = useState(true);
     const navigate = useNavigate();
     const toggleIsLogin = ()=>{setIsLogin(!isLogin)}
@@ -65,8 +65,9 @@ const Login = () => {
             if (response.data.token) {
                 console.log("Login successful, token:", response.data.token);
                 localStorage.setItem("token", response.data.token);
-                toast.success("Login successful!");
+                setUser(true);
                 navigate('/'); // Redirect to '/chat/'
+                toast.success("Login successful!");
             } else {
                 throw new Error("Token missing in response");
             }
