@@ -48,7 +48,8 @@ const getAllFriendRequest = async(req,res) =>{
 // TODO having admin access remove it
 const addFriend = async (req, res) => {
     try {
-        const { friendEmail, userId } = req.body;
+        const userId = req.userId;
+        const friendEmail = req.body.friendEmail;
 
         const foundFriend = await User.findOne({ email: friendEmail });
         if (!foundFriend) {

@@ -17,7 +17,7 @@ const Home = () => {
     console.log("Home "+ chatParamId)
     const [loading,setLoading] = useState(true);
     const[currentChat,setCurrentChat] = useState(null);
-
+    const [friendEmail,setFriendEmail] = useState('');
     const [friendPersons,setFriendPerson] = useState([]);
 
     const fetchFriend = async () => {
@@ -38,10 +38,30 @@ const Home = () => {
         }
     };
 
+    const emailInputHandler = (event)=>{
+        setFriendEmail(event.target.value);
+    }
 
 
     const AddBtnHandler = () => {
         setAddBtnToggle(!addBtnToggle);
+    }
+    
+    const RequestBtnHandler = async() =>{
+        const response = await axios.post('http://localhost:8000/friend/addFriend',{
+            friendEmail:friendEmail
+        },{
+            headers:{
+                token: localStorage.getItem('token')
+            }
+        })
+        if(response.status==200){
+            toast.success('Friend Request Sent');
+        }else{
+            toast.error('Friend Request Failed');
+        }
+        setAddBtnToggle(!addBtnToggle);
+        setFriendEmail('');
     }
 
     const currentChatFunction = ()=>{
@@ -95,9 +115,9 @@ const Home = () => {
                     </div>
                     <div className='flex flex-col items-center justify-around h-[150px]'>
                         <div className='h-[55px] w-[80%] relative'>
-                            <input className='h-full w-full p-7 text-lg border border-gray-400 rounded-full' type='text' placeholder='Search Email' />
+                            <input className='h-full w-full p-7 text-lg border border-gray-400 rounded-full' type='text' placeholder='Search Email' value={friendEmail} onChange={emailInputHandler} />
                         </div>
-                        <button className='bg-primary py-3 px-7 rounded-full text-white hover:bg-orange-700' onClick={AddBtnHandler}>
+                        <button className='bg-primary py-3 px-7 rounded-full text-white hover:bg-orange-700' onClick={RequestBtnHandler}>
                             Send Request
                         </button>
                     </div>

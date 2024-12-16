@@ -134,7 +134,7 @@ const ChatBox = (
     }
     
     const ProfileButtonHandler = ()=>{
-        // navigate(`/profile/${curr.currentChat._id}`);
+        navigate(`/profile/${curr.currentChat._id}`);
     }
 
     // useEffect(()=>{
