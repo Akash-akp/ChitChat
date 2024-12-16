@@ -22,6 +22,29 @@ const getAllFriend = async (req, res) => {
 };
 
 
+const getAllFriendRequest = async(req,res) =>{
+    try {
+        const userId = req.userId; 
+        const foundUser = await User.findById(userId).populate('friendRequest');
+        if (!foundUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        const friendRequest = foundUser.friendRequest;
+        console.log(friendRequest)
+        res.status(200).json({
+            friendRequest
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+    
+}
+
 // TODO having admin access remove it
 const addFriend = async (req, res) => {
     try {
@@ -118,4 +141,4 @@ const acceptRequest = async(req,res) => {
 }
 
 
-module.exports = {getAllFriend,addFriend,acceptRequest};
+module.exports = {getAllFriend,addFriend,acceptRequest,getAllFriendRequest};

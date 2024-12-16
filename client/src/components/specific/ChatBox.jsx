@@ -15,131 +15,131 @@ const ChatBox = (
     const [perChat,setPerChat] = useState(null);
 
 
-    const chatData = [
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Hi there! How are you doing today?",
-        },
-        {
-            senderId: 1,
-            recieverId:0,
-            msg:"Hey! I’m doing well, thanks for asking. How about you?"
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"I’m good too. I was just thinking about the new project we’re starting. Any ideas on what we should focus on first?",
-        },
-        {
-            senderId: 1,
-            recieverId:0,
-            msg:"Hmm, we should probably define the scope of the project first. Make sure everyone is on the same page."
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Great point. I’ll start working on the project outline, and we can review it together. What do you think?",
-        },
-        {
-            senderId: 1,
-            recieverId:0,
-            msg:"Sounds good. Once the outline is ready, we can break it down into tasks and assign them. We should also make a timeline."
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Agreed! I’ll draft the outline tonight. Let’s meet tomorrow to go over it.",
-        },
-        {
-            senderId: 1,
-            recieverId:0,
-            msg:"Perfect. I’ll prepare some suggestions as well. See you tomorrow!"
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Looking forward to it. Bye!",
-        },
-        {
-            senderId: 1,
-            recieverId:0,
-            msg:"Bye"
-        },
-        {
-            senderId: 2,
-            recieverId: 0,
-            msg:"Hii Akash"
-        },
-        {
-            senderId: 0,
-            recieverId: 2,
-            msg:"Hii Aakriti!! What's up"
-        },
-        {
-            senderId:4,
-            recieverId:0,
-            msg:"Hii Akash"
-        },
-        {
-            senderId:0,
-            recieverId:4,
-            msg:"Hii Lazy Person"
-        },
-        {
-            senderId:3,
-            recieverId:0,
-            msg:"Hii Akash"
-        },
-        {
-            senderId:0,
-            recieverId:3,
-            msg:"Hii Bro"
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Hi",
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Hi",
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Hi",
-        },
-        {   
-            senderId: 0,
-            recieverId:1,
-            msg:"Hi",
-        },
-        {   
-            senderId: 1,
-            recieverId:0,
-            msg:"Hi there! How are you doing today?",
-        },
-    ];
+    // const chatData = [
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Hi there! How are you doing today?",
+    //     },
+    //     {
+    //         senderId: 1,
+    //         recieverId:0,
+    //         msg:"Hey! I’m doing well, thanks for asking. How about you?"
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"I’m good too. I was just thinking about the new project we’re starting. Any ideas on what we should focus on first?",
+    //     },
+    //     {
+    //         senderId: 1,
+    //         recieverId:0,
+    //         msg:"Hmm, we should probably define the scope of the project first. Make sure everyone is on the same page."
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Great point. I’ll start working on the project outline, and we can review it together. What do you think?",
+    //     },
+    //     {
+    //         senderId: 1,
+    //         recieverId:0,
+    //         msg:"Sounds good. Once the outline is ready, we can break it down into tasks and assign them. We should also make a timeline."
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Agreed! I’ll draft the outline tonight. Let’s meet tomorrow to go over it.",
+    //     },
+    //     {
+    //         senderId: 1,
+    //         recieverId:0,
+    //         msg:"Perfect. I’ll prepare some suggestions as well. See you tomorrow!"
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Looking forward to it. Bye!",
+    //     },
+    //     {
+    //         senderId: 1,
+    //         recieverId:0,
+    //         msg:"Bye"
+    //     },
+    //     {
+    //         senderId: 2,
+    //         recieverId: 0,
+    //         msg:"Hii Akash"
+    //     },
+    //     {
+    //         senderId: 0,
+    //         recieverId: 2,
+    //         msg:"Hii Aakriti!! What's up"
+    //     },
+    //     {
+    //         senderId:4,
+    //         recieverId:0,
+    //         msg:"Hii Akash"
+    //     },
+    //     {
+    //         senderId:0,
+    //         recieverId:4,
+    //         msg:"Hii Lazy Person"
+    //     },
+    //     {
+    //         senderId:3,
+    //         recieverId:0,
+    //         msg:"Hii Akash"
+    //     },
+    //     {
+    //         senderId:0,
+    //         recieverId:3,
+    //         msg:"Hii Bro"
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Hi",
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Hi",
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Hi",
+    //     },
+    //     {   
+    //         senderId: 0,
+    //         recieverId:1,
+    //         msg:"Hi",
+    //     },
+    //     {   
+    //         senderId: 1,
+    //         recieverId:0,
+    //         msg:"Hi there! How are you doing today?",
+    //     },
+    // ];
 
     const PerChatHandler = ()=>{
         let perC = [];
-        chatData.forEach((data)=>{
-            if(data.senderId==curr.currentChat.Id||data.recieverId==curr.currentChat.Id){
-                perC.push(data);
-            }
-        })
+        // chatData.forEach((data)=>{
+        //     if(data.senderId==curr.currentChat.Id||data.recieverId==curr.currentChat.Id){
+        //         perC.push(data);
+        //     }
+        // })
         setPerChat(perC);
     }
     
     const ProfileButtonHandler = ()=>{
-        navigate(`/profile/${curr.currentChat._id}`);
+        // navigate(`/profile/${curr.currentChat._id}`);
     }
 
-    useEffect(()=>{
-        PerChatHandler();
-    },[curr.currentChat.Id])
+    // useEffect(()=>{
+    //     PerChatHandler();
+    // },[curr.currentChat.Id])
 
   return (
     <div className='flex flex-col gap-3 h-full relative'>
@@ -150,10 +150,10 @@ const ChatBox = (
                 </div>
                 <div className='flex flex-col'>
                     <div className='text-lg'>
-                        {curr.currentChat.userName}
+                        {curr?.currentChat?.userName}
                     </div>
                     <div className='text-sm text-gray-600'>
-                        {curr.currentChat.mode?(curr.currentChat.mode):("Offline")}
+                        {curr?.currentChat?.mode?(curr.currentChat.mode):("Offline")}
                     </div>
                 </div>
             </div>
@@ -165,7 +165,7 @@ const ChatBox = (
         <div className='h-[calc(100vh-160px)] bg-white rounded-xl overflow-y-scroll'>
             {perChat?(
                 <div className='relative'>
-                    {perChat.map((data,index)=>{
+                    {/* {perChat.map((data,index)=>{
                         if(data.senderId==curr.currentChat.Id){
                             return(
                                 <div key={index} className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
@@ -181,7 +181,7 @@ const ChatBox = (
                                 </div>
                             )
                         }
-                    })}
+                    })} */}
                     {/*  */}
                 </div>
             ):(

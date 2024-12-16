@@ -1,68 +1,83 @@
-import React,{lazy, Suspense, useEffect, useState} from 'react'
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import {Toaster} from 'react-hot-toast'
-import ProtectRoute from './components/auth/ProtectRoute.jsx'
-import Home from "./pages/Home.jsx"
+import React, { lazy, Suspense, useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import ProtectRoute from './components/auth/ProtectRoute.jsx';
+import Home from "./pages/Home.jsx";
 import Profile from "./components/specific/Profile.jsx";
 import Notification from './pages/Notifications.jsx';
 import Login from "./pages/Login.jsx";
-import axios from 'axios'
+import axios from 'axios';
 
-// lazy import
-const NotFound = lazy(()=> import("./pages/NotFound.jsx"))
+// Lazy import
+const NotFound = lazy(() => import("./pages/NotFound.jsx"));
 
 const App = () => {
-  const [user,setUser] = useState(null);
-  const foundUser = ()=>{
-    if(localStorage.getItem('token')){
-      setUser(localStorage.getItem('token'));
-    }else{
+  const [user, setUser] = useState(null);
+
+  const foundUser = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setUser(token);
+    } else {
       setUser(null);
     }
-  }
+  };
 
-  const foundUserId = async()=>{
-    if(localStorage.getItem('token')){
-      const response = await axios.get('http://localhost:8000/user/me',{
-        headers:{
-          token: localStorage.getItem('token')
+  const foundUserId = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const response = await axios.get('http://localhost:8000/user/me', {
+          headers: {
+            token
+          }
+        });
+        if (response.data?.foundUser?._id) {
+          localStorage.setItem('UserId', response.data.foundUser._id);
         }
-      });
-      localStorage.setItem('UserId',response.data.foundUser._id);
+      }
+    } catch (error) {
+      console.error("Error fetching user ID:", error.message);
     }
-  }
+  };
 
   useEffect(()=>{
     foundUser();
+  },[])
+
+  useEffect(() => {
+    foundUser();
     foundUserId();
-  },[localStorage.getItem('token')])
+  }, [user]);
 
   return (
-    // Routing 
+    // Routing
     <BrowserRouter>
       <Suspense fallback={<div>Loading...</div>}>
-      <Routes>
+        <Routes>
+          {/* Protected Routes */}
+          <Route element={<ProtectRoute user={localStorage.getItem('token')!=null} />}>
+            <Route path='/' element={<Home />} />
+            <Route path='/notification' element={<Notification />} />
+            <Route path='/notification/:notificationParamId' element={<Notification />} />
+            <Route path='/chat' element={<Home />} />
+            <Route path='/chat/:chatParamId' element={<Home />} />
+            <Route path='/profile/:profileId' element={<Profile />} />
+          </Route>
 
-        <Route element={<ProtectRoute user={user}/>} > 
-          <Route path='/' element={<Home/>} />
-          <Route path='/notification' element={<Notification />} />
-          <Route path='/notification/:notificationParamId' element={<Notification />} />
-          <Route path='/chat' element={<Home />} />
-          <Route path='/chat/:chatParamId' element={<Home />} />
-          <Route path='/profile/:profileId' element={<Profile />} />
-        </ Route>
+          {/* Login Route */}
+          <Route element={<ProtectRoute user={localStorage.getItem('token')==null} redirect='/' />}>
+            <Route path='/login' element={<Login setUser={setUser} />} />
+          </Route>
 
-        <Route element={<ProtectRoute user={!user} redirect='/'/>}> 
-          <Route path='/login' element={<Login setUser={setUser}/>} />
-        </Route>
-
-        <Route path='*' element={<NotFound />} />
-      </Routes>
+          {/* Fallback Route */}
+          <Route path='*' element={<NotFound />} />
+        </Routes>
       </Suspense>
-      {/* Import Toast */}
+      {/* Toaster for Notifications */}
       <Toaster />
     </BrowserRouter>
-  )
-}
+  );
+};
 
-export default App
+export default App;

@@ -7,11 +7,11 @@ const NotificationList = ({ notification = [], notificationParamId }) => {
   return (
     <div>
       <Suspense fallback={<div>Loading notification...</div>}>
-        {notification.map((data) => (
+        {notification.map((data,index) => (
           <Notification 
-            key={data.Id} 
-            data={data.name} 
-            Id={data.Id} 
+            key={index} 
+            data={data.userName} 
+            Id={data._id} 
             mode = {data.mode}
             notificationParamId={notificationParamId} 
           />

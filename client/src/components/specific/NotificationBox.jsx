@@ -1,16 +1,41 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const NotificationBox = ({notP,notPersons=[]}) => {
-    const [loading,setLoading] = useState(true);
-    const isBioPresent = true;
-    const [personData,setPersonData] = useState(null);
-    const findNotification = ()=>{
-        setPersonData(notPersons.find((n)=>n.Id==notP));
+    const [loading, setLoading] = useState(true);
+    const [personData, setPersonData] = useState(null);
+    const navigate = useNavigate();
+  
+    const findNotification = () => {
+      const findUser = notPersons.find((n) => n._id === notP); 
+      setPersonData(findUser); 
+    };
+
+    const AcceptRequestHandler = async()=>{
+        console.log('userId',localStorage.getItem('UserId'));
+        const response = await axios.post('http://localhost:8000/friend/acceptRequest',{
+            userId: localStorage.getItem('UserId'),
+            friendId : notP
+        },{
+            headers:{
+                token: localStorage.getItem('token')
+            }
+        })
+        if(response.status == '200'){
+            navigate(`/chat/${notP}`);
+        }else{
+            toast.error('unable to accept friend request')
+        }
     }
-    useEffect(()=>{
-        findNotification();
-        setLoading(false);
-    },[notP])
+  
+    useEffect(() => {
+      findNotification();
+      setLoading(false);
+    }, [notPersons, notP]); 
+  
+
   return (
     <>
         {loading?(<h1>Loading....</h1>):(
@@ -20,15 +45,15 @@ const NotificationBox = ({notP,notPersons=[]}) => {
 
             </div>
             <div className='text-3xl'>
-                {personData.name}
+                {personData?.userName}
             </div>
             <div type='text' className='w-[90%] border border-black rounded-xl p-3 relative'>
                 <div>
-                    {personData.description?(personData.description):('No Description')}
+                    {personData?.description}
                 </div>
             </div>
             <div className='w-full flex justify-end px-[5%] gap-3'>
-                <button className='px-5 py-2 text-md bg-primary text-white rounded-full cursor-pointer hover:bg-orange-700 transition-all duration-100' >
+                <button className='px-5 py-2 text-md bg-primary text-white rounded-full cursor-pointer hover:bg-orange-700 transition-all duration-100' onClick={AcceptRequestHandler} >
                     Accept Request
                 </button>
                 <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-black hover:text-white  transition-all duration-100'>

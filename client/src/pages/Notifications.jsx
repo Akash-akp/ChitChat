@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import NotificationListDialog from '../components/dialog/NotificationListDialog'
 import NotificationList from '../components/specific/NotificationList'
 import NotificationBox from '../components/specific/NotificationBox'
+import axios from 'axios'
 
 const Notifications = () => {
     const {notificationParamId} = useParams();
@@ -15,18 +16,27 @@ const Notifications = () => {
         console.log("Home "+ notificationParamId)
         const [loading,setLoading] = useState(true);
         const[currentChat,setCurrentChat] = useState(null);
-        const notPersons = [
-            {
-                name:"Jyotirmayee",
-                Id : 6,
-                description: "I am sister of Akash"
-            },
-            {
-                name:"Kiran Kumari Parida",
-                Id : 7,
-                description: "I am also sister of Akash"
+        const [notPersons,setNotPerson] = useState([]);
+
+        const fetchNotPerson = async () => {
+            try {
+              const token = localStorage.getItem('token');
+              if (!token) {
+                console.error("Token not found! User may not be authenticated.");
+                return;
+              }
+          
+              const response = await axios.get('http://localhost:8000/friend/getAllFriendRequest', {
+                headers: {
+                  token, 
+                },
+              });
+                setNotPerson(response.data.friendRequest); 
+            } catch (error) {
+              console.error("Error fetching friend requests:", error.message);
             }
-        ];
+          };
+
     
         const currentChatFunction = ()=>{
             const chat = notPersons.find((chat)=>chat.Id==notificationParamId);
@@ -38,6 +48,7 @@ const Notifications = () => {
         useEffect(()=>{
             setNotP(notificationParamId)
             currentChatFunction();
+            fetchNotPerson();
             setLoading(false);
         },[notificationParamId]);
   return (

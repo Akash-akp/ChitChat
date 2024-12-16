@@ -39,24 +39,6 @@ const Home = () => {
     };
 
 
-    const chatPersons = [
-        {
-            name:"Akash Kumar Parida",
-            Id : 1
-        },{
-        //     name:"Aakriti Nayak",
-        //     Id : 2,
-        //     mode: "Online"
-        // },
-        // {
-            name:"Abhisek Nandi",
-            Id : 3
-        },
-        {
-            name:"K Simran",
-            Id : 4
-        }
-    ];
 
     const AddBtnHandler = () => {
         setAddBtnToggle(!addBtnToggle);
@@ -89,7 +71,7 @@ const Home = () => {
                         </div>
                         <div className='h-full w-full bg-white border rounded-xl'>
                             {
-                                friendPersons.length==0? (<ChatListDialog />) :(<ChatList chats={friendPersons} chatParamId={chatParamId} />)
+                                friendPersons?.length==0? (<ChatListDialog />) :(<ChatList chats={friendPersons} chatParamId={chatParamId} />)
                             }
                         </div>
                     </div>
