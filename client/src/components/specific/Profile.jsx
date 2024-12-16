@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
+import axios from 'axios';
 
 const Profile = () => {
     const {profileId} = useParams();
-    console.log(profileId);
     const [loading,setLoading] = useState(true);
     const [personData,setPersonData] = useState(null);
     const [profileData,setProfileData] = useState(null);
@@ -35,11 +35,19 @@ const Profile = () => {
     ];
     const isBioPresent = true;
 
-    const currentProfileFunction = ()=>{
-        const profile = profilePerson.find((prof)=>prof.Id==profileId);
-        const person = chatPersons.find((chat)=>chat.Id==profileId);
-        setPersonData(person);
-        setProfileData(profile);
+    const currentProfileFunction = async()=>{
+        console.log("profileId",profileId)
+        setLoading(true);
+
+        const response = await axios.post('http://localhost:8000/user/findUser',{
+                userId: profileId
+            },{
+            headers: {
+                token: localStorage.getItem('token'), 
+            }
+        });
+        console.log(response.data.foundUser);
+        setPersonData(response.data.foundUser);
     }
 
     useEffect(()=>{
@@ -56,7 +64,7 @@ const Profile = () => {
 
             </div>
             <div className='text-3xl'>
-                {personData.name}
+                {personData?personData.userName:'Name not loaded'}
             </div>
             <div type='text' className='w-[90%] border border-black rounded-xl p-3 relative'>
                 {
@@ -65,7 +73,7 @@ const Profile = () => {
                         <textarea className='w-full h-full outline-none' placeholder='Write your bio...'/>
                     ):(
                         <div>
-                            {profileData.Profile}
+                            {personData?personData.description:'Not loaded yet'}
                         </div>
                     )
                 }

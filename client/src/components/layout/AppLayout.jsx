@@ -76,7 +76,7 @@ const AppLayout = ({children}) => {
                         {/* <img src={binSolidIcon} className="scale-150 cursor-pointer" /> */}
                     </div>
                     <div className="flex flex-col gap-5 my-[30px]">
-                        <div className="cursor-pointer" onClick={()=>navigate('/profile/1')}>
+                        <div className="cursor-pointer" onClick={()=>navigate(`/profile/${localStorage.getItem('UserId')}`)}>
                             {profileIconState?(
                                 <img src={accountSolidIcon} className="scale-150" />
                             ):(

@@ -2,15 +2,16 @@ const User = require('../models/user.model');
 
 const getAllFriend = async (req, res) => {
     try {
-        const userId = req.body.userId; 
+        const userId = req.userId; 
         const foundUser = await User.findById(userId).populate('friends');
         if (!foundUser) {
             return res.status(404).json({
                 message: "User not found"
             });
         }
+        const friendList = foundUser.friends;
         res.status(200).json({
-            friends: foundUser.friends
+            friends: friendList
         });
     } catch (error) {
         res.status(500).json({

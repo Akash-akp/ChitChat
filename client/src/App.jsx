@@ -6,27 +6,37 @@ import Home from "./pages/Home.jsx"
 import Profile from "./components/specific/Profile.jsx";
 import Notification from './pages/Notifications.jsx';
 import Login from "./pages/Login.jsx";
+import axios from 'axios'
 
 // lazy import
 const NotFound = lazy(()=> import("./pages/NotFound.jsx"))
 
 const App = () => {
-  const [user,setUser] = useState(false);
-
+  const [user,setUser] = useState(null);
   const foundUser = ()=>{
     if(localStorage.getItem('token')){
-    console.log(localStorage.getItem('token'));
-      setUser(true);
+      setUser(localStorage.getItem('token'));
     }else{
-      setUser(false);
+      setUser(null);
+    }
+  }
+
+  const foundUserId = async()=>{
+    if(localStorage.getItem('token')){
+      const response = await axios.get('http://localhost:8000/user/me',{
+        headers:{
+          token: localStorage.getItem('token')
+        }
+      });
+      localStorage.setItem('UserId',response.data.foundUser._id);
     }
   }
 
   useEffect(()=>{
     foundUser();
-  },[])
+    foundUserId();
+  },[localStorage.getItem('token')])
 
-  const userId = 1;
   return (
     // Routing 
     <BrowserRouter>
@@ -34,7 +44,7 @@ const App = () => {
       <Routes>
 
         <Route element={<ProtectRoute user={user}/>} > 
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home/>} />
           <Route path='/notification' element={<Notification />} />
           <Route path='/notification/:notificationParamId' element={<Notification />} />
           <Route path='/chat' element={<Home />} />
@@ -43,7 +53,7 @@ const App = () => {
         </ Route>
 
         <Route element={<ProtectRoute user={!user} redirect='/'/>}> 
-          <Route path='/login' element={<Login setUser={setUser} />} />
+          <Route path='/login' element={<Login setUser={setUser}/>} />
         </Route>
 
         <Route path='*' element={<NotFound />} />

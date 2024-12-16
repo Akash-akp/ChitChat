@@ -4,15 +4,78 @@ const errorHandler = require('../utils/error.js');
 const jwt = require('jsonwebtoken');
 
 
-const auth = async(req,res,next) =>{
-    const token = req.headers.token;
-    const decodedData = jwt.sign(token,process.env.JWT_SECRET);
-    if(decodedData){
-        next();
-    }else{
-        next(errorHandler(400,"You are not authenticated"));
+const auth = async (req, res, next) => {
+    try {
+        const token = req.headers.token;
+        console.log(token)
+        if (!token) {
+            return res.status(400).json({ message: 'Token is missing!' });
+        }
+        const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+        if (decodedData) {
+            req.userId = decodedData.userId;
+            next(); 
+        } else {
+            return res.status(400).json({ message: 'Invalid token' }); 
+        }
+
+    } catch (error) {
+        return res.status(400).json({ message: 'Authentication failed', error: error.message });
+    }
+};
+
+const me = async(req,res,next) =>{
+    const userId = req.userId;
+    try {
+        const foundUser = await User.findById(userId);
+        
+        if (!foundUser) {
+            return res.status(404).json({
+                message: "User Not Found"
+            });
+        }
+    
+        const { password, ...rest } = foundUser._doc;
+    
+        res.status(200).json({
+            foundUser: rest
+        });
+    
+    } catch (e) {
+        console.error(e); 
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: e.message 
+        });
     }
 }
+
+const findUser = async (req, res, next) => {
+    const userId = req.body.userId;
+    
+    try {
+        const foundUser = await User.findById(userId);
+        
+        if (!foundUser) {
+            return res.status(404).json({
+                message: "User Not Found"
+            });
+        }
+
+        const { password, ...rest } = foundUser._doc;
+
+        res.status(200).json({
+            foundUser: rest
+        });
+
+    } catch (e) {
+        console.error(e); 
+        return res.status(500).json({
+            message: "Internal Server Error",
+            error: e.message 
+        });
+    }
+};
 
 const signup = async (req, res, next) => {
     console.log(req.body);
@@ -96,4 +159,4 @@ const google = async (req, res, next) => {
     }
 };
 
-module.exports = { signup, signin, google ,auth};
+module.exports = { signup, signin, google ,auth ,findUser ,me};

@@ -65,7 +65,7 @@ const Login = ({setUser}) => {
             if (response.data.token) {
                 console.log("Login successful, token:", response.data.token);
                 localStorage.setItem("token", response.data.token);
-                setUser(true);
+                setUser(response.data.token);
                 navigate('/'); // Redirect to '/chat/'
                 toast.success("Login successful!");
             } else {

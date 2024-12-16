@@ -3,15 +3,15 @@ import React, { lazy, Suspense } from 'react';
 // Lazy loading the Chat component
 const Chat = lazy(() => import('./Chat'));
 
-const ChatList = ({ chats = [], chatParamId ,mode }) => {
+const ChatList = ({ chats, chatParamId ,mode }) => {
   return (
     <div>
       <Suspense fallback={<div>Loading chats...</div>}>
-        {chats.map((data) => (
+        {chats.map((data,index) => (
           <Chat 
-            key={data.Id} 
-            data={data.name} 
-            Id={data.Id}
+            key={index} 
+            data={data.userName} 
+            Id={data._id}
             mode = {data.mode} 
             chatParamId={chatParamId} 
           />

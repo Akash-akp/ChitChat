@@ -1,6 +1,8 @@
 import React , {lazy, useEffect, useState} from 'react'
 import AppLayout from '../components/layout/AppLayout'
 import { useParams } from 'react-router-dom'
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Head = lazy(()=> import('../utils/Head'))
 const ChatListDialog = lazy(()=>import('../components/dialog/ChatListDialog'))
@@ -15,16 +17,38 @@ const Home = () => {
     console.log("Home "+ chatParamId)
     const [loading,setLoading] = useState(true);
     const[currentChat,setCurrentChat] = useState(null);
+
+    const [friendPersons,setFriendPerson] = useState([]);
+
+    const fetchFriend = async () => {
+        console.log("object")
+        try {
+            const response = await axios.get('http://localhost:8000/friend/getAllFriend',  {
+                headers: {
+                    token: localStorage.getItem('token'),  
+                },
+            });
+            setFriendPerson(response.data.friends);
+        } catch (error) {
+            if(error.status==400){
+                localStorage.removeItem('token');
+                toast.sucess('Logout');
+            }
+            console.log("error", error.message);
+        }
+    };
+
+
     const chatPersons = [
         {
             name:"Akash Kumar Parida",
             Id : 1
         },{
-            name:"Aakriti Nayak",
-            Id : 2,
-            mode: "Online"
-        },
-        {
+        //     name:"Aakriti Nayak",
+        //     Id : 2,
+        //     mode: "Online"
+        // },
+        // {
             name:"Abhisek Nandi",
             Id : 3
         },
@@ -39,7 +63,7 @@ const Home = () => {
     }
 
     const currentChatFunction = ()=>{
-        const chat = chatPersons.find((chat)=>chat.Id==chatParamId);
+        const chat = friendPersons.find((chat)=>chat._id==chatParamId);
         setCurrentChat(chat);
     }
 
@@ -47,7 +71,9 @@ const Home = () => {
 
     useEffect(()=>{
         setChatP(chatParamId)
+        fetchFriend();
         currentChatFunction();
+        console.log("currentChat",currentChat)
         setLoading(false);
     },[chatParamId]);
   return (
@@ -63,7 +89,7 @@ const Home = () => {
                         </div>
                         <div className='h-full w-full bg-white border rounded-xl'>
                             {
-                                chatPersons.length==0? (<ChatListDialog />) :(<ChatList chats={chatPersons} chatParamId={chatParamId} />)
+                                friendPersons.length==0? (<ChatListDialog />) :(<ChatList chats={friendPersons} chatParamId={chatParamId} />)
                             }
                         </div>
                     </div>

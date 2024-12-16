@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEWmvOd3wx2xgbP6-heFfS7-QPqV03G-IDMH45ix9aYw&s'
     },
+    description:{
+        type: String,
+        default: ''
+    },
     // message:{
     //     type: [mongoose.Schema.Types.ObjectId],
     //     ref: "Mesage",

@@ -10,9 +10,10 @@ const ChatBox = (
     const navigate = useNavigate();
     
     const curr = JSON.parse(JSON.stringify(currentChat));
-    console.log(curr)
+    console.log("curr",curr)
 
     const [perChat,setPerChat] = useState(null);
+
 
     const chatData = [
         {   
@@ -133,7 +134,7 @@ const ChatBox = (
     }
     
     const ProfileButtonHandler = ()=>{
-        navigate(`/profile/${curr.currentChat.Id}`);
+        navigate(`/profile/${curr.currentChat._id}`);
     }
 
     useEffect(()=>{
@@ -149,7 +150,7 @@ const ChatBox = (
                 </div>
                 <div className='flex flex-col'>
                     <div className='text-lg'>
-                        {curr.currentChat.name}
+                        {curr.currentChat.userName}
                     </div>
                     <div className='text-sm text-gray-600'>
                         {curr.currentChat.mode?(curr.currentChat.mode):("Offline")}
