@@ -31,7 +31,7 @@ const AppLayout = ({children}) => {
     }
 
     const CheckProfileIcon = () => {
-        if(location.pathname =='/profile/1'){
+        if(location.pathname ==`/profile/${localStorage.getItem('UserId')}`){
             setProfileIconState(true);
         }else{
             setProfileIconState(false);
