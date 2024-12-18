@@ -2,7 +2,7 @@ const User = require('../models/user.model.js');
 const bcryptjs = require('bcryptjs');
 const errorHandler = require('../utils/error.js');
 const jwt = require('jsonwebtoken');
-
+const {z} = require('zod');
 
 const auth = async (req, res, next) => {
     try {
@@ -77,11 +77,22 @@ const findUser = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
-    console.log(req.body);
-    const { userName, email, password } = req.body;
-    if (!userName || !email || !password || userName === '' || email === '' || password === '') {
-        return next(errorHandler(400, "All fields are required"));
+    const requiredBody = z.object({
+        userName: z.string().min(3).max(100),
+        email: z.string().min(3).max(100).email(),
+        password: z.string().min(3).max(30)
+    })
+
+    const parseData = requiredBody.safeParse(req.body);
+
+    if(!parseData.success){
+        res.status(400).json({
+            message:"Incorrect format",
+            error: parseData.error
+        })
     }
+    
+    const { userName, email, password } = req.body;
 
     const hashedPassword = bcryptjs.hashSync(password, 10);
 
