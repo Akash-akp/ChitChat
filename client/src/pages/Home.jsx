@@ -28,7 +28,9 @@ const Home = () => {
                     token: localStorage.getItem('token'),  
                 },
             });
+            console.log("response friendPersons",response.data.friends);
             setFriendPerson(response.data.friends);
+            console.log("response friendPersons2",friendPersons);
         } catch (error) {
             if(error.status==400){
                 localStorage.removeItem('token');
@@ -74,10 +76,15 @@ const Home = () => {
     useEffect(()=>{
         setChatP(chatParamId)
         fetchFriend();
+    },[chatParamId])
+
+    useEffect(()=>{
         currentChatFunction();
+        console.log("friendPersons",friendPersons)
         console.log("currentChat",currentChat)
         setLoading(false);
-    },[chatParamId]);
+    },[friendPersons]);
+    
   return (
     <div className='relative'>
         <AppLayout>

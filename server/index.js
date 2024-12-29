@@ -13,6 +13,8 @@ app.use(express.json());
 app.use(cors());
 
 
+// sudo mongod --dbpath=/Users/apple/data/db
+
 mongoose.connect(process.env.Mongo_Url).then(
     ()=>{
         console.log("Mongoose is connected")
