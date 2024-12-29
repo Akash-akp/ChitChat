@@ -1,145 +1,62 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SendIcon from '../../assets/Icons/sendIcon.svg'
 import AttachIcon from '../../assets/Icons/attach-icon.svg'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import axios from 'axios'
 
 const ChatBox = (
     currentChat
 ) => {
+    const msgRef = useRef(null);
 
     const navigate = useNavigate();
-    
-    const curr = JSON.parse(JSON.stringify(currentChat));
-    console.log("curr",curr)
-
-    const [perChat,setPerChat] = useState(null);
 
 
-    // const chatData = [
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Hi there! How are you doing today?",
-    //     },
-    //     {
-    //         senderId: 1,
-    //         recieverId:0,
-    //         msg:"Hey! I’m doing well, thanks for asking. How about you?"
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"I’m good too. I was just thinking about the new project we’re starting. Any ideas on what we should focus on first?",
-    //     },
-    //     {
-    //         senderId: 1,
-    //         recieverId:0,
-    //         msg:"Hmm, we should probably define the scope of the project first. Make sure everyone is on the same page."
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Great point. I’ll start working on the project outline, and we can review it together. What do you think?",
-    //     },
-    //     {
-    //         senderId: 1,
-    //         recieverId:0,
-    //         msg:"Sounds good. Once the outline is ready, we can break it down into tasks and assign them. We should also make a timeline."
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Agreed! I’ll draft the outline tonight. Let’s meet tomorrow to go over it.",
-    //     },
-    //     {
-    //         senderId: 1,
-    //         recieverId:0,
-    //         msg:"Perfect. I’ll prepare some suggestions as well. See you tomorrow!"
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Looking forward to it. Bye!",
-    //     },
-    //     {
-    //         senderId: 1,
-    //         recieverId:0,
-    //         msg:"Bye"
-    //     },
-    //     {
-    //         senderId: 2,
-    //         recieverId: 0,
-    //         msg:"Hii Akash"
-    //     },
-    //     {
-    //         senderId: 0,
-    //         recieverId: 2,
-    //         msg:"Hii Aakriti!! What's up"
-    //     },
-    //     {
-    //         senderId:4,
-    //         recieverId:0,
-    //         msg:"Hii Akash"
-    //     },
-    //     {
-    //         senderId:0,
-    //         recieverId:4,
-    //         msg:"Hii Lazy Person"
-    //     },
-    //     {
-    //         senderId:3,
-    //         recieverId:0,
-    //         msg:"Hii Akash"
-    //     },
-    //     {
-    //         senderId:0,
-    //         recieverId:3,
-    //         msg:"Hii Bro"
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Hi",
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Hi",
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Hi",
-    //     },
-    //     {   
-    //         senderId: 0,
-    //         recieverId:1,
-    //         msg:"Hi",
-    //     },
-    //     {   
-    //         senderId: 1,
-    //         recieverId:0,
-    //         msg:"Hi there! How are you doing today?",
-    //     },
-    // ];
+    const [chatData,setChatData] = useState([]);
 
-    const PerChatHandler = ()=>{
-        let perC = [];
-        // chatData.forEach((data)=>{
-        //     if(data.senderId==curr.currentChat.Id||data.recieverId==curr.currentChat.Id){
-        //         perC.push(data);
-        //     }
-        // })
-        setPerChat(perC);
+    const fetchChatData = async()=>{
+        try {
+            const response = await axios.post('http://localhost:8000/message/getAllMessages',{
+                friendId:currentChat.currentChat._id
+            },{
+                headers:{
+                    token:localStorage.getItem('token')
+                }
+            });
+            console.log("response",response.data.messages);
+            setChatData(response.data.messages);
+        } catch (error) {
+            console.log("error",error.message)
+        }
+    }
+
+    const SendMessageHandler = async()=>{
+        try{
+            const response = await axios.post('http://localhost:8000/message/sendMessage',{
+                receiverId:currentChat.currentChat._id,
+                message:msgRef.current.value
+            },{
+                headers:{
+                    token:localStorage.getItem('token')
+                }
+            })
+            if(response.data){
+                msgRef.current.value = '';
+            }
+        }catch(error){
+            console.log("error",error.message);
+        }
     }
     
     const ProfileButtonHandler = ()=>{
-        navigate(`/profile/${curr.currentChat._id}`);
+        navigate(`/profile/${currentChat?._id}`);
     }
 
-    // useEffect(()=>{
-    //     PerChatHandler();
-    // },[curr.currentChat.Id])
+    useEffect(()=>{
+        console.log(currentChat.currentChat)
+        fetchChatData();
+    },[])
+
 
   return (
     <div className='flex flex-col gap-3 h-full relative'>
@@ -150,10 +67,10 @@ const ChatBox = (
                 </div>
                 <div className='flex flex-col'>
                     <div className='text-lg'>
-                        {curr?.currentChat?.userName}
+                        {currentChat?.currentChat?.userName}
                     </div>
                     <div className='text-sm text-gray-600'>
-                        {curr?.currentChat?.mode?(curr.currentChat.mode):("Offline")}
+                        {currentChat?.currentChat?.mode?(curr.currentChat.mode):("Offline")}
                     </div>
                 </div>
             </div>
@@ -163,25 +80,25 @@ const ChatBox = (
         </div>
 
         <div className='h-[calc(100vh-160px)] bg-white rounded-xl overflow-y-scroll'>
-            {perChat?(
+            {chatData?(
                 <div className='relative'>
-                    {/* {perChat.map((data,index)=>{
-                        if(data.senderId==curr.currentChat.Id){
+                     {chatData.map((data,index)=>{
+                        if(data.senderId==currentChat.currentChat._id){
                             return(
                                 <div key={index} className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
-                                    {data.msg}
+                                    {data.message}
                                 </div>
                             )
                         }else{
                             return(
                                 <div key={index} className='flex justify-end'>
                                     <div className='bg-gray-700 text-white block m-2 p-2 rounded-l-xl rounded-tr-xl  max-w-[50%] w-fit text-right relative right-0'>
-                                        {data.msg}
+                                        {data.message}
                                     </div>
                                 </div>
                             )
                         }
-                    })} */}
+                    })} 
                     {/*  */}
                 </div>
             ):(
@@ -194,9 +111,9 @@ const ChatBox = (
                 <div className='w-[60px] flex justify-center cursor-pointer'>
                     <img src={AttachIcon} alt="" className='scale-150' />
                 </div>
-                <input type='text' placeholder='Write messages...' className='w-full h-full rounded-xl outline-none' />
+                <input ref={msgRef} type='text' placeholder='Write messages...' className='w-full h-full rounded-xl outline-none' />
             </div>
-            <div className='w-[60px] h-[60px] bg-primary rounded-xl flex justify-center items-center cursor-pointer'>
+            <div className='w-[60px] h-[60px] bg-primary rounded-xl flex justify-center items-center cursor-pointer' onClick={SendMessageHandler}>
                 <img src={SendIcon} alt="" className='scale-150 relative top-[5px]' />
             </div>
         </div>

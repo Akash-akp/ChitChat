@@ -22,11 +22,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    // message:{
-    //     type: [mongoose.Schema.Types.ObjectId],
-    //     ref: "Mesage",
-    //     default: []
-    // },
+    message:{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "Message",
+        default: []
+    },
     friends: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'User',

@@ -20,7 +20,6 @@ const AppLayout = ({children}) => {
     const [profileIconState,setProfileIconState] = useState(false);
     const [notificationIconState,setNotificationIconState] = useState(false);
 
-    console.log(location.pathname.includes('/chat')||location.pathname.includes('/'));
 
     const CheckChatIcon = () => {
         if(location.pathname.includes('/chat')||location.pathname == '/'){

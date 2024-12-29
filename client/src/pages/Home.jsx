@@ -14,28 +14,28 @@ const Home = () => {
     const {chatParamId} = useParams();
     const [chatP,setChatP] = useState(chatParamId);
     const [addBtnToggle,setAddBtnToggle] = useState(false);
-    console.log("Home "+ chatParamId)
     const [loading,setLoading] = useState(true);
     const[currentChat,setCurrentChat] = useState(null);
     const [friendEmail,setFriendEmail] = useState('');
     const [friendPersons,setFriendPerson] = useState([]);
 
     const fetchFriend = async () => {
-        console.log("object")
         try {
             const response = await axios.get('http://localhost:8000/friend/getAllFriend',  {
                 headers: {
                     token: localStorage.getItem('token'),  
                 },
             });
-            console.log("response friendPersons",response.data.friends);
             setFriendPerson(response.data.friends);
-            console.log("response friendPersons2",friendPersons);
         } catch (error) {
             if(error.status==400){
                 localStorage.removeItem('token');
                 toast.sucess('Logout');
             }
+            // if(error.status==404){
+            //     localStorage.removeItem('token');
+            //     toast.sucess('Logout');
+            // }
             console.log("error", error.message);
         }
     };
@@ -71,8 +71,6 @@ const Home = () => {
         setCurrentChat(chat);
     }
 
-    console.log(currentChat)
-
     useEffect(()=>{
         setChatP(chatParamId)
         fetchFriend();
@@ -80,8 +78,6 @@ const Home = () => {
 
     useEffect(()=>{
         currentChatFunction();
-        console.log("friendPersons",friendPersons)
-        console.log("currentChat",currentChat)
         setLoading(false);
     },[friendPersons]);
     
@@ -104,7 +100,7 @@ const Home = () => {
                     </div>
                     <div className='w-[calc(100%-450px)] h-full relative'>
                         {
-                            !chatP? (<ChatBoxDialog />) :(<ChatBox currentChat={currentChat} />)
+                            !currentChat? (<ChatBoxDialog />) :(<ChatBox currentChat={currentChat} />)
                         }
                     </div>
                 </div>
