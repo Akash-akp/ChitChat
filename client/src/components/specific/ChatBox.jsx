@@ -75,7 +75,7 @@ const ChatBox = (
     }
     
     const ProfileButtonHandler = ()=>{
-        navigate(`/profile/${currentChat?._id}`);
+        navigate(`/profile/${currentChat?.currentChat?._id}`);
     }
 
     const getTime = (time)=>{
