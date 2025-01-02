@@ -8,6 +8,7 @@ import NotificationListDialog from '../components/dialog/NotificationListDialog'
 import NotificationList from '../components/specific/NotificationList'
 import NotificationBox from '../components/specific/NotificationBox'
 import axios from 'axios'
+import proxyService1 from '../proxyService1'
 
 const Notifications = () => {
     const {notificationParamId} = useParams();
@@ -26,7 +27,7 @@ const Notifications = () => {
                 return;
               }
           
-              const response = await axios.get('http://localhost:8000/friend/getAllFriendRequest', {
+              const response = await proxyService1.get('/friend/getAllFriendRequest', {
                 headers: {
                   token, 
                 },

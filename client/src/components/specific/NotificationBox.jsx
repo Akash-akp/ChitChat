@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import proxyService1 from '../../proxyService1';
 
 const NotificationBox = ({notP,notPersons=[]}) => {
     const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const NotificationBox = ({notP,notPersons=[]}) => {
 
     const AcceptRequestHandler = async()=>{
         console.log('userId',localStorage.getItem('UserId'));
-        const response = await axios.post('http://localhost:8000/friend/acceptRequest',{
+        const response = await proxyService1.post('/friend/acceptRequest',{
             userId: localStorage.getItem('UserId'),
             friendId : notP
         },{

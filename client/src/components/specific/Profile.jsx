@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
-import axios from 'axios';
+import proxyService1 from '../../proxyService1';
 
 const Profile = () => {
     const {profileId} = useParams();
@@ -11,7 +11,7 @@ const Profile = () => {
         console.log("profileId",profileId)
         setLoading(true);
 
-        const response = await axios.post('http://localhost:8000/user/findUser',{
+        const response = await proxyService1.post('/user/findUser',{
                 userId: profileId
             },{
             headers: {

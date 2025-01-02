@@ -4,6 +4,7 @@ import { AiOutlineEye , AiOutlineEyeInvisible } from "react-icons/ai";
 import { toast }  from 'react-hot-toast'
 import Google from '../assets/google.jpeg';
 import axios from 'axios';
+import proxyService1 from '../proxyService1';
 
 const Login = ({setUser}) => {
     const [isLogin,setIsLogin] = useState(true);
@@ -38,7 +39,7 @@ const Login = ({setUser}) => {
             return;
         }
         try{
-            const response = await axios.post('http://localhost:8000/auth/signup',{
+            const response = await proxyService1.post('/auth/signup',{
                 userName: signupFormData.userName,
                 email: signupFormData.userId,
                 password: signupFormData.userPassword
@@ -57,7 +58,7 @@ const Login = ({setUser}) => {
         event.preventDefault();
         try {
             console.log("Submitting login form with data:", loginFormData);
-            const response = await axios.post('http://localhost:8000/auth/signin', {
+            const response = await proxyService1.post('/auth/signin', {
                 email: loginFormData.userId,
                 password: loginFormData.userPassword,
             });

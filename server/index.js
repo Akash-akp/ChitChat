@@ -6,7 +6,7 @@ const userRoute = require('./routes/user.route.js');
 const authRoute = require('./routes/auth.route.js');
 const friendRoute = require('./routes/friend.route.js');
 const messageRoute = require('./routes/message.route.js');
-const {WebSocketServer} = require('ws');
+const startSocketServer = require('./socket/manager.js');
 
 const dotenv = require('dotenv')
 dotenv.config();
@@ -27,16 +27,9 @@ mongoose.connect(process.env.Mongo_Url).then(
     }
 )
 
-const wss = new WebSocketServer({port:8080},()=>{console.log("Websocket server is running on ws://localhost:8080")});
+const socketPort = 8080;
 
-let allSocket = [];
-
-wss.on('connection',(ws)=>{
-    ws.on('message',(message)=>{
-        console.log(`Received message => ${message}`);
-        ws.send(`Received message => ${message}`);
-    })
-});
+startSocketServer(socketPort);
 
 const port = 8000;
 

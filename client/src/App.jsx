@@ -6,7 +6,7 @@ import Home from "./pages/Home.jsx";
 import Profile from "./components/specific/Profile.jsx";
 import Notification from './pages/Notifications.jsx';
 import Login from "./pages/Login.jsx";
-import axios from 'axios';
+import proxyService1 from './proxyService1.js';
 
 // Lazy import
 const NotFound = lazy(() => import("./pages/NotFound.jsx"));
@@ -27,7 +27,7 @@ const App = () => {
     try {
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await axios.get('http://localhost:8000/user/me', {
+        const response = await proxyService1.get('/user/me', {
           headers: {
             token
           }

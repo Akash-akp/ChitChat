@@ -1,8 +1,11 @@
-import React , {lazy, useEffect, useState} from 'react'
+import React , {lazy, useContext, useEffect, useState} from 'react'
 import AppLayout from '../components/layout/AppLayout'
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import proxyService1 from '../proxyService1';
+import proxyService2 from '../proxyService2';
+import { AppContext } from '../context/AppProvider';
 
 const Head = lazy(()=> import('../utils/Head'))
 const ChatListDialog = lazy(()=>import('../components/dialog/ChatListDialog'))
@@ -12,6 +15,7 @@ const ChatBox = lazy(()=>import('../components/specific/ChatBox'))
 
 const Home = () => {
     const {chatParamId} = useParams();
+    const wsRef = useContext(AppContext).wsRef;
     const [chatP,setChatP] = useState(chatParamId);
     const [addBtnToggle,setAddBtnToggle] = useState(false);
     const [loading,setLoading] = useState(true);
@@ -21,7 +25,7 @@ const Home = () => {
 
     const fetchFriend = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/friend/getAllFriend',  {
+            const response = await proxyService1.get('/friend/getAllFriend',  {
                 headers: {
                     token: localStorage.getItem('token'),  
                 },
@@ -50,7 +54,7 @@ const Home = () => {
     }
     
     const RequestBtnHandler = async() =>{
-        const response = await axios.post('http://localhost:8000/friend/addFriend',{
+        const response = await proxyService1.post('/friend/addFriend',{
             friendEmail:friendEmail
         },{
             headers:{
@@ -71,8 +75,24 @@ const Home = () => {
         setCurrentChat(chat);
     }
 
+    const joinSocketHandler = async()=>{
+        const socket = new WebSocket('ws://localhost:8080');
+        wsRef.current = socket;
+        socket.onopen = ()=>{
+            socket.send(JSON.stringify({
+                type:'join',
+                userId:localStorage.getItem('UserId')
+            }))
+            console.log("Connnected");
+        }
+        socket.onclose = ()=>{
+            console.log("Disconnected");
+        }
+    }
+
     useEffect(()=>{
         setChatP(chatParamId)
+        joinSocketHandler();
         fetchFriend();
     },[chatParamId])
 

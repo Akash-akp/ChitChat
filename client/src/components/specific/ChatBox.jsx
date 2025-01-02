@@ -1,13 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import SendIcon from '../../assets/Icons/sendIcon.svg'
 import AttachIcon from '../../assets/Icons/attach-icon.svg'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import proxyService1 from '../../proxyService1'
+import proxyService2 from '../../proxyService2'
+import { AppContext } from '../../context/AppProvider'
 
 const ChatBox = (
     currentChat
 ) => {
     const msgRef = useRef(null);
+    const wsRef = useContext(AppContext).wsRef;
 
     const navigate = useNavigate();
 
@@ -16,7 +19,7 @@ const ChatBox = (
 
     const fetchChatData = async()=>{
         try {
-            const response = await axios.post('http://localhost:8000/message/getAllMessages',{
+            const response = await proxyService1.post('/message/getAllMessages',{
                 friendId:currentChat.currentChat._id
             },{
                 headers:{
@@ -32,7 +35,7 @@ const ChatBox = (
 
     const SendMessageHandler = async()=>{
         try{
-            const response = await axios.post('http://localhost:8000/message/sendMessage',{
+            const response = await proxyService1.post('/message/sendMessage',{
                 receiverId:currentChat.currentChat._id,
                 message:msgRef.current.value
             },{
@@ -40,12 +43,22 @@ const ChatBox = (
                     token:localStorage.getItem('token')
                 }
             })
+            const messagePayload = {
+                type: 'message',
+                senderId: localStorage.getItem('UserId'),
+                receiverId: currentChat.currentChat._id,
+                message: msgRef.current.value,
+            };
+        
+            wsRef.current.send(JSON.stringify(messagePayload));
+            console.log("Message sent:", JSON.stringify(messagePayload));
             if(response.data){
                 msgRef.current.value = '';
             }
         }catch(error){
             console.log("error",error.message);
         }
+
     }
     
     const ProfileButtonHandler = ()=>{
@@ -53,9 +66,17 @@ const ChatBox = (
     }
 
     useEffect(()=>{
-        console.log(currentChat.currentChat)
         fetchChatData();
-    },[])
+        console.log("WsRef",wsRef.current);
+        wsRef.current.onmessage = (message)=>{
+            const res = JSON.parse(message.data);
+            if(res.type == 'message'){
+                setChatData((chat)=>[...chat,res]);
+            }
+        }
+        
+        console.log(wsRef.current)
+    },[currentChat,setChatData])
 
 
   return (
