@@ -45,15 +45,18 @@ const ChatBox = (
                     token:localStorage.getItem('token')
                 }
             })
+            console.log("eee",response.data)
             const messagePayload = {
                 type: 'message',
                 senderId: localStorage.getItem('UserId'),
                 receiverId: currentChat.currentChat._id,
                 message: msgRef.current.value,
+                createdAt: getTime(response.data.createdAt)
             };
         
             wsRef.current.send(JSON.stringify(messagePayload));
             console.log("Message sent:", JSON.stringify(messagePayload));
+            console.log(chatData);
             if(response.data){
                 msgRef.current.value = '';
             }
@@ -74,6 +77,20 @@ const ChatBox = (
     const ProfileButtonHandler = ()=>{
         navigate(`/profile/${currentChat?._id}`);
     }
+
+    const getTime = (time)=>{
+        if(!time) return;
+        const date = new Date(time);
+        const hour = date.getHours();
+        const minute = date.getMinutes();
+        const stringHour = (hour%12)<10?'0'+(hour%12):(hour%12);
+        const stringMinute = minute<10?'0'+minute:minute;
+        if(hour<12){
+            return stringHour + ':' + stringMinute + ' AM';
+        }else{
+            return stringHour + ':' + stringMinute + ' PM';
+        }
+    }
     
     useEffect(()=>{
         fetchChatData();
@@ -81,6 +98,7 @@ const ChatBox = (
         wsRef.current.onmessage = (message)=>{
             const res = JSON.parse(message.data);
             if(res.type == 'message'){
+                res.webSocket = true;
                 setChatData((chat)=>[...chat,res]);
             }
         }
@@ -121,19 +139,25 @@ const ChatBox = (
                         if(data.senderId==currentChat.currentChat._id){
                             return(
                                 <div key={index}>
-                                    <div className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
+                                    <div className='bg-primary text-white block m-2 mb-0 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
                                         {data.message}
                                     </div>
-                                    <div>
-                                        
+                                    <div className='text-[12px] text-gray-800 ml-2'>
+                                        {data.webSocket?(data.createdAt):(getTime(data.createdAt))}
+                                        {/* {typeof data.createdAt == String?(<>abc</>):(<div>{getTime(data.createdAt)}</div>)} */}
                                     </div>
                                 </div>
                             )
                         }else{
                             return(
-                                <div key={index} className='flex justify-end'>
-                                    <div className='bg-gray-700 text-white block m-2 p-2 rounded-l-xl rounded-tr-xl  max-w-[50%] w-fit text-right relative right-0'>
+                                <div key={index} className='flex flex-col items-end'>
+                                    <div className='bg-gray-700 text-white block m-2 mb-0 p-2 rounded-l-xl rounded-tr-xl  max-w-[50%] w-fit text-right relative right-0'>
                                         {data.message}
+                                    </div>
+                                    <div className='text-[12px] text-gray-800 mr-2'>
+                                        {data.webSocket?(data.createdAt):(getTime(data.createdAt))}
+                                        {/* {typeof data.createdAt == String?(<>abc</>):(<div>{getTime(data.createdAt)}</div>)} */}
+                                        {/* {getTime(data.createdAt)} */}
                                     </div>
                                 </div>
                             )

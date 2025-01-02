@@ -23,7 +23,8 @@ const sendMessage = async (req, res) => {
         await foundSender.save();
         await foundReceiver.save();
         res.status(201).json({
-            message: "Message sent"
+            message: "Message sent",
+            createdAt: newMessage.createdAt
         });
     }catch (error){
         res.status(500).json({

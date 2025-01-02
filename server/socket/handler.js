@@ -16,13 +16,13 @@ const onMessage = (message,ws,allSocket) =>{
         const receiverSocket = allSocket.find(socket=>socket.userId == receiverId)?.ws;
         if(receiverSocket){
             console.log("found receiver");
-            receiverSocket.send(JSON.stringify({type:"message",senderId:messageObj.senderId,receiverId:messageObj.receiverId,message:messageObj.message}));
+            receiverSocket.send(JSON.stringify({type:"message",senderId:messageObj.senderId,receiverId:messageObj.receiverId,message:messageObj.message,createdAt:messageObj.createdAt}));
         }
         const senderId = messageObj.senderId;
         const senderSocket = allSocket.find(socket=>socket.userId == senderId)?.ws;
         if(senderSocket){
             console.log("found sender");
-            senderSocket.send(JSON.stringify({type:"message",senderId:messageObj.senderId,receiverId:messageObj.receiverId,message:messageObj.message}));
+            senderSocket.send(JSON.stringify({type:"message",senderId:messageObj.senderId,receiverId:messageObj.receiverId,message:messageObj.message,createdAt:messageObj.createdAt}));
         }
     }
 }
