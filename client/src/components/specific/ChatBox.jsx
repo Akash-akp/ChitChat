@@ -3,14 +3,15 @@ import SendIcon from '../../assets/Icons/sendIcon.svg'
 import AttachIcon from '../../assets/Icons/attach-icon.svg'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import proxyService1 from '../../proxyService1'
-import proxyService2 from '../../proxyService2'
 import { AppContext } from '../../context/AppProvider'
 
 const ChatBox = (
     currentChat
 ) => {
     const msgRef = useRef(null);
+    const messagesRef = useRef(null);
     const wsRef = useContext(AppContext).wsRef;
+    const {chatParamId} = useParams();
 
     const navigate = useNavigate();
 
@@ -32,6 +33,7 @@ const ChatBox = (
             console.log("error",error.message)
         }
     }
+    // console.log(chatData)
 
     const SendMessageHandler = async()=>{
         try{
@@ -58,13 +60,21 @@ const ChatBox = (
         }catch(error){
             console.log("error",error.message);
         }
-
+        
+    }
+    
+    const MsgInputHandler = (event)=>{
+        if(event.key === 'Enter'&&event.shiftKey){
+            msgRef.current.value = msgRef.current.value + '\n';
+        }else if(event.key === 'Enter'){
+            SendMessageHandler();
+        }
     }
     
     const ProfileButtonHandler = ()=>{
         navigate(`/profile/${currentChat?._id}`);
     }
-
+    
     useEffect(()=>{
         fetchChatData();
         console.log("WsRef",wsRef.current);
@@ -76,7 +86,11 @@ const ChatBox = (
         }
         
         console.log(wsRef.current)
-    },[currentChat,setChatData])
+    },[currentChat,chatParamId])
+    
+    useEffect(()=>{
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    },[chatData])
 
 
   return (
@@ -100,14 +114,19 @@ const ChatBox = (
             </div>
         </div>
 
-        <div className='h-[calc(100vh-160px)] bg-white rounded-xl overflow-y-scroll'>
+        <div ref={messagesRef} className='h-[calc(100vh-160px)] bg-white rounded-xl overflow-y-auto'>
             {chatData?(
                 <div className='relative'>
                      {chatData.map((data,index)=>{
                         if(data.senderId==currentChat.currentChat._id){
                             return(
-                                <div key={index} className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
-                                    {data.message}
+                                <div key={index}>
+                                    <div className='bg-primary text-white block m-2 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
+                                        {data.message}
+                                    </div>
+                                    <div>
+                                        
+                                    </div>
                                 </div>
                             )
                         }else{
@@ -128,11 +147,11 @@ const ChatBox = (
         </div>
 
         <div className='h-[60px] flex w-full relative gap-3'>
-            <div className='w-full bg-white rounded-xl flex items-center'>
+            <div className='w-full bg-white rounded-xl flex items-center justify-center'>
                 <div className='w-[60px] flex justify-center cursor-pointer'>
                     <img src={AttachIcon} alt="" className='scale-150' />
                 </div>
-                <input ref={msgRef} type='text' placeholder='Write messages...' className='w-full h-full rounded-xl outline-none' />
+                <input ref={msgRef} onKeyDown={MsgInputHandler} type='text' placeholder='Write messages...' className='w-full h-full rounded-xl outline-none' />
             </div>
             <div className='w-[60px] h-[60px] bg-primary rounded-xl flex justify-center items-center cursor-pointer' onClick={SendMessageHandler}>
                 <img src={SendIcon} alt="" className='scale-150 relative top-[5px]' />
