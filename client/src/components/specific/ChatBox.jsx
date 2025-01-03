@@ -33,7 +33,6 @@ const ChatBox = (
             console.log("error",error.message)
         }
     }
-    // console.log(chatData)
 
     const SendMessageHandler = async()=>{
         try{
@@ -45,13 +44,12 @@ const ChatBox = (
                     token:localStorage.getItem('token')
                 }
             })
-            console.log("eee",response.data)
             const messagePayload = {
                 type: 'message',
                 senderId: localStorage.getItem('UserId'),
                 receiverId: currentChat.currentChat._id,
                 message: msgRef.current.value,
-                createdAt: getTime(response.data.createdAt)
+                createdAt: getTime(response.data.createdAt),
             };
         
             wsRef.current.send(JSON.stringify(messagePayload));
@@ -90,6 +88,45 @@ const ChatBox = (
         }else{
             return stringHour + ':' + stringMinute + ' PM';
         }
+    }
+
+    const getDate = (time)=>{
+        if(!time) return;
+        const date = new Date(time);
+        const currentDate = new Date();
+        if(
+            date.getDate()==currentDate.getDate()&&
+            date.getMonth()==currentDate.getMonth()&&
+            date.getFullYear()==currentDate.getFullYear()){
+            return 'Today';
+        }
+        const yesterdayDate = new Date(currentDate);
+        yesterdayDate.setDate(yesterdayDate.getDate()-1);
+        if(
+            date.getDate()==yesterdayDate.getDate()&&
+            date.getMonth()==yesterdayDate.getMonth()&&
+            date.getFullYear()==yesterdayDate.getFullYear()){
+            return 'Yesterday';
+        }
+        const month = date.getMonth();
+        const monthArray = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ]
+        const monthString = monthArray[month];
+        const day = date.getDate();
+        const year = date.getFullYear();
+        return day + ' ' + monthString + ' ' + year;
     }
     
     useEffect(()=>{
@@ -136,28 +173,48 @@ const ChatBox = (
             {chatData?(
                 <div className='relative'>
                      {chatData.map((data,index)=>{
+                        let addAddress = '';
+                        if(data.webSocket){
+                            console.log(data);
+                            if(!chatData[index-1].webSocket){
+                                addAddress = (
+                                    <div key={index} className='text-center text-gray-800'>
+                                        Today
+                                    </div>
+                                )
+                            }
+                        }else{
+                            if(getDate(chatData[index].createdAt)!=getDate(chatData[index-1]?.createdAt)){
+                                addAddress = (
+                                    <div key={index} className='text-center text-gray-800'>
+                                        {getDate(data.createdAt)}
+                                    </div>
+                                )
+                            }
+                        }
                         if(data.senderId==currentChat.currentChat._id){
-                            return(
+                            return (
                                 <div key={index}>
+                                    {addAddress}
                                     <div className='bg-primary text-white block m-2 mb-0 p-2 rounded-r-xl rounded-tl-xl  max-w-[50%] w-fit'>
                                         {data.message}
                                     </div>
                                     <div className='text-[12px] text-gray-800 ml-2'>
                                         {data.webSocket?(data.createdAt):(getTime(data.createdAt))}
-                                        {/* {typeof data.createdAt == String?(<>abc</>):(<div>{getTime(data.createdAt)}</div>)} */}
                                     </div>
                                 </div>
                             )
                         }else{
                             return(
-                                <div key={index} className='flex flex-col items-end'>
-                                    <div className='bg-gray-700 text-white block m-2 mb-0 p-2 rounded-l-xl rounded-tr-xl  max-w-[50%] w-fit text-right relative right-0'>
-                                        {data.message}
-                                    </div>
-                                    <div className='text-[12px] text-gray-800 mr-2'>
-                                        {data.webSocket?(data.createdAt):(getTime(data.createdAt))}
-                                        {/* {typeof data.createdAt == String?(<>abc</>):(<div>{getTime(data.createdAt)}</div>)} */}
-                                        {/* {getTime(data.createdAt)} */}
+                                <div key={index} >
+                                    {addAddress}
+                                    <div className='flex flex-col items-end'>
+                                        <div className='bg-gray-700 text-white block m-2 mb-0 p-2 rounded-l-xl rounded-tr-xl  max-w-[50%] w-fit text-right relative right-0'>
+                                            {data.message}
+                                        </div>
+                                        <div className='text-[12px] text-gray-800 mr-2'>
+                                            {data.webSocket?(data.createdAt):(getTime(data.createdAt))}
+                                        </div>
                                     </div>
                                 </div>
                             )
