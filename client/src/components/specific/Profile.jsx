@@ -22,6 +22,12 @@ const Profile = () => {
         setPersonData(response.data.foundUser);
     }
 
+    const LogOutHandler = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('UserId');
+        window.location.href = '/';
+    }
+
     useEffect(()=>{
         currentProfileFunction();
         setLoading(false);
@@ -47,8 +53,13 @@ const Profile = () => {
                 <div >
                     {
                         profileId == localStorage.getItem('UserId')? (
-                            <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100'>
-                                Change Bio
+                            <div className='flex gap-3'>
+                                <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100'>
+                                    Change Bio
+                                </div>
+                                <div onClick={LogOutHandler} className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100'>
+                                    Log Out
+                                </div>
                             </div>
                             ):(
                             <div className='flex gap-3'>

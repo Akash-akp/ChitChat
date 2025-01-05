@@ -174,9 +174,10 @@ const ChatBox = (
                 <div className='relative'>
                      {chatData.map((data,index)=>{
                         let addAddress = '';
-                        if(data.webSocket){
+                        if(index==0||data.webSocket){
                             console.log(data);
-                            if(!chatData[index-1].webSocket){
+                            if(index==0||(!chatData[index-1].webSocket&&getDate(chatData[index-1]?.createdAt)!='Today')){
+                                console.log(data.createdAt,getDate(chatData[index-1]?.createdAt));
                                 addAddress = (
                                     <div key={index} className='text-center text-gray-800'>
                                         Today

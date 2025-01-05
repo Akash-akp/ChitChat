@@ -55,8 +55,8 @@ const AppLayout = ({children}) => {
     return (
         <>
             <Title />
-            <div className="flex bg-lightdarkgray w-[100vw] ">
-                <div className="w-[80px] h-[95vh] bg-gray-800 my-[2.5vh] ml-6 rounded-xl flex flex-col relative items-center justify-between">
+            <div className="flex bg-lightdarkgray w-[100vw]">
+                <div className="w-[80px] min-w-[56px] h-[95vh] bg-gray-800 my-[2.5vh] ml-6 rounded-xl flex flex-col relative items-center justify-between">
                     <IoChatbubbles className="fill-primary scale-150 my-[30px] cursor-pointer " onClick={()=>navigate("/")} />
                     <div className="flex flex-col gap-[50px]">
                         <img src={mailIcon} className="scale-150 cursor-pointer" onClick={()=>alert("under development")} />
