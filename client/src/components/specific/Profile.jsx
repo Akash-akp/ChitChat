@@ -18,7 +18,7 @@ const Profile = () => {
                 token: localStorage.getItem('token'), 
             }
         });
-        console.log(response.data.foundUser);
+        console.log('personData',response.data.foundUser);
         setPersonData(response.data.foundUser);
     }
 
