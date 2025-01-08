@@ -1,12 +1,24 @@
-// import User = require("../models/user.model");
+const User = require("../models/user.model");
 
-// const putDescription = (req,res)=>{
-//     const id = req.id;
-//     const {description} = req.body;
-//     const foundUser = User.findById(id);
-//     foundUser.description = description;
-//     foundUser.save();
-//     res.json({message: "Description updated",description});
-// }
+const putDescription = async (req, res) => {
+    try {
+        const id = req.userId;
+        const { description } = req.body;
 
-// module.exports = {putDescription}
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { description },
+            { new: true, runValidators: true } // Ensures updated document is returned
+        );
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ message: "Description updated", description: updatedUser.description });
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+module.exports = { putDescription };

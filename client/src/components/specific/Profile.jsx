@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState , useRef } from 'react'
 import { useParams } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import proxyService1 from '../../proxyService1';
@@ -7,6 +7,28 @@ const Profile = () => {
     const {profileId} = useParams();
     const [loading,setLoading] = useState(true);
     const [personData,setPersonData] = useState(null);
+    const [bioBtn,setBioBtn] = useState(true);
+    // const [bioContent,setBioContent] = useState('');
+    const bioRef = useRef();
+
+    const ChangeBioHandler = ()=>{
+        if(bioBtn){
+            bioRef.current.value = personData.description;
+            bioRef.current.focus();
+            console.log(bioRef);
+            setBioBtn(false);
+        }else{
+            console.log("true")
+            bioRef.current.value='';
+            setBioBtn(true);
+        }
+
+    }
+
+    const BioInputChangeHandler = (event) => {
+        // bioRef.current.value = event.target.value;
+    }
+
     const currentProfileFunction = async()=>{
         console.log("profileId",profileId)
         setLoading(true);
@@ -44,18 +66,16 @@ const Profile = () => {
             <div className='text-3xl'>
                 {personData?personData.userName:'Name not loaded'}
             </div>
-            <div type='text' className='w-[90%] border border-black rounded-xl p-3 relative'>
-                <div>
-                    {personData?personData.description:'Not loaded yet'}
-                </div>
+            <div type='text' className={`w-[90%] border text-black ${!bioBtn?('border-primary border-2 '):('border-black')} rounded-xl p-3 relative`}>
+                <textarea ref={bioRef} onChange={BioInputChangeHandler} disabled={bioBtn} className='placeholder:text-black w-full h-full outline-none' placeholder={personData?personData.description:'Bio not loaded'}></textarea>
             </div>
             <div className='w-full flex justify-end px-[5%]'>
                 <div >
                     {
                         profileId == localStorage.getItem('UserId')? (
                             <div className='flex gap-3'>
-                                <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100'>
-                                    Change Bio
+                                <div className={bioBtn?('px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100'):('px-5 py-2 text-md border rounded-full cursor-pointer bg-primary text-white hover:bg-orange-700 hover:border-primary transition-all duration-100')} onClick={ChangeBioHandler}>
+                                    {bioBtn?('Change Bio'):('UpdateBio')}
                                 </div>
                                 <div onClick={LogOutHandler} className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100'>
                                     Log Out

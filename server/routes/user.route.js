@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/findUser',auth,findUser)
 router.get('/me',auth,me);
-// router.post('/putDescription',auth,putDescription);
+router.post('/putDescription',auth,putDescription);
 
 
 module.exports = router
