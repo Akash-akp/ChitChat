@@ -8,10 +8,13 @@ import { AppContext } from '../../context/AppProvider'
 const ChatBox = (
     currentChat
 ) => {
+    console.log('oi',currentChat?.currentChat?.unFriended);
+    console.log(currentChat?.currentChat?.unFriended?.includes(localStorage.getItem('UserId')));
     const msgRef = useRef(null);
     const messagesRef = useRef(null);
     const wsRef = useContext(AppContext).wsRef;
     const {chatParamId} = useParams();
+    const [isDisabled,setIsDisabled] = useState(false)
 
     const navigate = useNavigate();
 
@@ -128,6 +131,19 @@ const ChatBox = (
         const year = date.getFullYear();
         return day + ' ' + monthString + ' ' + year;
     }
+
+    const RemoveFriendHandler = async()=>{
+        const response = await proxyService1.delete('friend/removeFriend',{
+            headers: {
+                token: localStorage.getItem('token')
+            },
+            data: {
+                friendId: chatParamId,
+                iRemoved: false
+            }
+        });
+        navigate('/');
+    }
     
     useEffect(()=>{
         fetchChatData();
@@ -139,7 +155,6 @@ const ChatBox = (
                 setChatData((chat)=>[...chat,res]);
             }
         }
-        
         console.log(wsRef.current)
     },[currentChat,chatParamId])
     
@@ -234,7 +249,22 @@ const ChatBox = (
                             )
                         }
                     })} 
-                    {/*  */}
+                    {currentChat?.currentChat?.unFriended?.includes(localStorage.getItem('UserId'))?(<div className='w-full bg-white sticky bottom-0  '> 
+                    <div className='flex flex-col gap-5 items-center bg-white border-gray-500 border-2 m-5 rounded-lg p-5'>
+                        <div>
+                            {currentChat?.currentChat?.userName} has unfriend you
+                        </div>
+                        <div className='flex gap-5'>
+                            <button className='px-5 py-2 text-white text-md border border-primary rounded-full cursor-pointer bg-primary hover:bg-orange-700 transition-all duration-100 text-center'>
+                                Sent Request
+                            </button>
+                            <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100 text-center' onClick={RemoveFriendHandler}>
+                                    Remove Friend
+                            </div>
+                        </div>
+                    </div>
+                    
+                    </div>):(<></>)}
                 </div>
             ):(
                 <div>No Message</div>
@@ -242,13 +272,13 @@ const ChatBox = (
         </div>
 
         <div className='h-[60px] flex w-full relative gap-3'>
-            <div className='w-full bg-white rounded-xl flex items-center justify-center'>
+            <div className={`w-full ${isDisabled?('bg-gray-700'):('bg-white')} rounded-xl flex items-center justify-center`}>
                 <div className='w-[60px] flex justify-center cursor-pointer'>
                     <img src={AttachIcon} alt="" className='scale-150' />
                 </div>
-                <input ref={msgRef} onKeyDown={MsgInputHandler} type='text' placeholder='Write messages...' className='w-full h-full rounded-xl outline-none' />
+                <input ref={msgRef} onKeyDown={MsgInputHandler} type='text' placeholder='Write messages...' className={`${isDisabled?('bg-gray-700'):('')} w-full h-full rounded-xl outline-none`} disabled={isDisabled} />
             </div>
-            <div className='w-[60px] h-[60px] bg-primary rounded-xl flex justify-center items-center cursor-pointer' onClick={SendMessageHandler}>
+            <div className={`w-[60px] h-[60px] ${isDisabled?('bg-gray-700'):('bg-primary')} rounded-xl flex justify-center items-center cursor-pointer`} onClick={isDisabled?(null):(SendMessageHandler)}>
                 <img src={SendIcon} alt="" className='scale-150 relative top-[5px]' />
             </div>
         </div>

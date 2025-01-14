@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const Message = require('../models/message.model');
 
 const getAllFriend = async (req, res) => {
     try {
@@ -47,10 +48,50 @@ const getAllFriendRequest = async(req,res) =>{
 const removeFriend = async(req,res) => {
     try {
         const userId = req.userId;
-        const friendUserId = req.body.userId;
-        const foundUser = await User.findById(userId);
-        foundUser.friends.remove(friendUserId);
+        const friendUserId = req.body.friendId;
+        const iRemoved = req.body.iRemoved;
+        console.log(typeof userId,typeof friendUserId);
+        const foundUser = await User.findById(userId).populate('message');
+        const foundFriend = await User.findById(friendUserId).populate('message');
+        if(!foundFriend){
+            return res.status(404).json({
+                message: "foundFriend not found"
+            })
+        }
+        if(!foundUser||!foundFriend){
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+        foundUser.friends = foundUser.friends.filter((i)=>i.toString()!=foundFriend.id.toString());
+        // foundFriend.friends = foundFriend.friends.filter((i)=>i.toString()!=userId);
+        if(iRemoved){
+            if(foundUser.unFriended){
+                foundUser.unFriended.push(foundFriend);
+            }else{
+                foundUser.unFriended = [foundFriend];
+            }
+        }else{
+            foundFriend.unFriended.pop(foundUser);
+        }
+        for (const i of foundUser.message) {
+            const fMessage = await Message.findById(i.id);
+            if((fMessage.senderId.toString()==userId&&fMessage.receiverId.toString()==foundFriend.id.toString())||(fMessage.receiverId.toString()==userId&&fMessage.senderId.toString()==foundFriend.id.toString())){
+                foundUser.message.pop(fMessage.id);
+                if(!iRemoved){
+                    await Message.deleteOne(fMessage);
+                }
+            }
+        }
+        // console.log('-----')
+        // console.log(foundFriend);
 
+
+        await foundUser.save();
+        await foundFriend.save();
+        res.status(200).json({
+            message: "Friend removed successfully"
+        })
     }catch (error){
         res.status(500).json({
             message : "Internal Server Error",
@@ -155,4 +196,4 @@ const acceptRequest = async(req,res) => {
 }
 
 
-module.exports = {getAllFriend,addFriend,acceptRequest,getAllFriendRequest};
+module.exports = {getAllFriend,addFriend,acceptRequest,getAllFriendRequest,removeFriend};

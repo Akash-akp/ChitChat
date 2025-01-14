@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'User',
         default: []
+    },
+    unFriended:{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref:'User',
+        default: []
     }
 },{timestamps: true});
 

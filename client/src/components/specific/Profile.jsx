@@ -1,28 +1,51 @@
 import React, { useEffect, useState , useRef } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import proxyService1 from '../../proxyService1';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
     const {profileId} = useParams();
     const [loading,setLoading] = useState(true);
     const [personData,setPersonData] = useState(null);
     const [bioBtn,setBioBtn] = useState(true);
+    const navigate = useNavigate();
     // const [bioContent,setBioContent] = useState('');
     const bioRef = useRef();
 
-    const ChangeBioHandler = ()=>{
+    const ChangeBioHandler = async()=>{
         if(bioBtn){
             bioRef.current.value = personData.description;
             bioRef.current.focus();
             console.log(bioRef);
             setBioBtn(false);
         }else{
-            console.log("true")
-            bioRef.current.value='';
+            const response = await proxyService1.post('user/putDescription',{
+                description: bioRef.current.value
+            },{
+                headers: {
+                    token: localStorage.getItem('token'), 
+                }
+            });
+            bioRef.current.value= await response.data.description;
+            console.log(bioRef.current.value); 
+            toast.success('Bio Updated');
             setBioBtn(true);
         }
 
+    }
+
+    const RemoveFriendHandler = async()=>{
+        const response = await proxyService1.delete('friend/removeFriend',{
+            headers: {
+                token: localStorage.getItem('token')
+            },
+            data: {
+                friendId: profileId,
+                iRemoved: true
+            }
+        });
+        navigate('/');
     }
 
     const BioInputChangeHandler = (event) => {
@@ -53,7 +76,7 @@ const Profile = () => {
     useEffect(()=>{
         currentProfileFunction();
         setLoading(false);
-    },[profileId])
+    },[profileId,bioBtn])
 
     return (
         <>
@@ -83,7 +106,7 @@ const Profile = () => {
                             </div>
                             ):(
                             <div className='flex gap-3'>
-                                <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100 text-center'>
+                                <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100 text-center' onClick={RemoveFriendHandler}>
                                     Remove Friend
                                 </div>
                                 <div className='px-5 py-2 text-md border border-black rounded-full cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition-all duration-100 text-center'>

@@ -124,7 +124,7 @@ const signin = async (req, res, next) => {
             return next(errorHandler(400, "Invalid Credentials"));
         }
         const token = jwt.sign(
-            { userId: validUser._id }, process.env.JWT_SECRET ,{expiresIn:"1h"}
+            { userId: validUser._id }, process.env.JWT_SECRET
         );
         validUser.message = "Logged in";
         const { password: pass, ...rest } = validUser._doc;
